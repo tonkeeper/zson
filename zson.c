@@ -25,6 +25,8 @@ PG_MODULE_MAGIC;
 
 PG_FUNCTION_INFO_V1(zson_in);
 PG_FUNCTION_INFO_V1(zson_out);
+PG_FUNCTION_INFO_V1(zson_recv);
+//PG_FUNCTION_INFO_V1(zson_send);
 PG_FUNCTION_INFO_V1(zson_to_jsonb);
 PG_FUNCTION_INFO_V1(jsonb_to_zson);
 PG_FUNCTION_INFO_V1(zson_info);
@@ -353,6 +355,17 @@ zson_in(PG_FUNCTION_ARGS)
 	bytea* zson_bytea = DatumGetByteaP(zson_datum);
 	PG_RETURN_BYTEA_P(zson_bytea);
 }
+
+Datum
+zson_recv(PG_FUNCTION_ARGS)
+{
+	Datum string_datum = PG_GETARG_DATUM(0);
+        Datum jsonb_datum = DirectFunctionCall1(jsonb_recv, string_datum);
+        Datum zson_datum = DirectFunctionCall1(jsonb_to_zson, jsonb_datum);
+        bytea* zson_bytea = DatumGetByteaP(zson_datum);
+        PG_RETURN_BYTEA_P(zson_bytea);
+}
+
 
 // zson -> cstring
 Datum

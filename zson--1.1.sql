@@ -112,6 +112,12 @@ CREATE FUNCTION zson_in(cstring)
     AS 'MODULE_PATHNAME'
     LANGUAGE C STRICT IMMUTABLE;
 
+CREATE FUNCTION zson_recv(internal)
+    RETURNS zson
+    AS 'MODULE_PATHNAME'
+    LANGUAGE C STRICT IMMUTABLE;
+
+
 CREATE FUNCTION zson_out(zson)
     RETURNS cstring
     AS 'MODULE_PATHNAME'
@@ -141,6 +147,10 @@ CREATE FUNCTION zson_info(zson)
     RETURNS cstring
     AS 'MODULE_PATHNAME'
     LANGUAGE C STRICT IMMUTABLE;
+
+UPDATE pg_type SET
+  typreceive = 'zson_recv(internal)'::regprocedure
+WHERE oid = 'zson'::regtype;
 
 --CREATE FUNCTION debug_dump_jsonb(jsonb)
 --    RETURNS cstring
